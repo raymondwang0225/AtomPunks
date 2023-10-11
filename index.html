@@ -17,6 +17,15 @@
         #pagination a {
             margin-right: 3px;
         }
+
+        .image-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .image-row > div {
+            margin-right: 20px;
+        }
     </style>
 
     <h1>AtomPunks</h1>
@@ -63,26 +72,43 @@
             const nftList = document.getElementById('nft-list');
             nftList.innerHTML = '';
 
-            pageData.forEach(item => {
-                const nftItem = document.createElement('div');
+            const columns = 20;
+            const rows = 10;
+            const imageSize = 100; // 调整图像大小，以便适应布局
 
-                const base64Data = hexToBase64(item.hex);
+            for (let row = 0; row < rows; row++) {
+                const rowContainer = document.createElement('div');
+                rowContainer.classList.add('image-row');
+                nftList.appendChild(rowContainer);
 
-                const image = document.createElement('img');
-                image.src = `data:image/png;base64,${base64Data}`;
-                nftItem.appendChild(image);
+                for (let col = 0; col < columns; col++) {
+                    const colIndex = row * columns + col;
+                    if (colIndex < pageData.length) {
+                        const item = pageData[colIndex];
 
-                const punkIdLabel = document.createElement('div');
-                punkIdLabel.textContent = `Punk ID: ${item.punk_id}`;
-                nftItem.appendChild(punkIdLabel);
+                        const nftItem = document.createElement('div');
 
-                nftItem.innerHTML += `Mint: ${item.mint}, Atomial Number: ${item.atomical_number}`;
-                nftList.appendChild(nftItem);
+                        const base64Data = hexToBase64(item.hex);
 
-                if (item.mint) {
-                    image.classList.add('darkened');
+                        const image = document.createElement('img');
+                        image.src = `data:image/png;base64,${base64Data}`;
+                        image.style.width = imageSize + 'px'; // 设置图像宽度
+                        image.style.height = imageSize + 'px'; // 设置图像高度
+                        nftItem.appendChild(image);
+
+                        const punkIdLabel = document.createElement('div');
+                        punkIdLabel.textContent = `Punk ID: ${item.punk_id}`;
+                        nftItem.appendChild(punkIdLabel);
+
+                        nftItem.innerHTML += `Mint: ${item.mint}, Atomial Number: ${item.atomical_number}`;
+                        rowContainer.appendChild(nftItem);
+
+                        if (item.mint) {
+                            image.classList.add('darkened');
+                        }
+                    }
                 }
-            });
+            }
         }
 
         function renderPagination() {
