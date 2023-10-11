@@ -88,6 +88,13 @@
                 pageLink.textContent = i;
                 pageLink.addEventListener('click', () => renderPage(i));
                 pagination.appendChild(pageLink);
+
+                if (i < totalPages) {
+                    // 插入间隔元素（可以是空格、竖线等）
+                    const separator = document.createElement('span');
+                    separator.textContent = ' | ';
+                    pagination.appendChild(separator);
+                }
             }
         }
     </script>
