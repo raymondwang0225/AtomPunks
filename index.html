@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>NFT 網站</title>
 </head>
 <body>
@@ -10,18 +11,20 @@
 
     <style>
         .darkened {
-            filter: brightness(0.5); /* 降低圖片亮度，可根據需要調整值 */
+            filter: brightness(0.5);
         }
     </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> <!-- 引入 Axios 库 -->
 
     <script>
         let nftData = [];
 
         async function fetchData() {
             try {
-                const response = await fetch('10kpunk_data.json');
-                if (response.ok) {
-                    nftData = await response.json();
+                const response = await axios.get('10kpunk_data.json'); // 使用 Axios 获取数据
+                if (response.status === 200) {
+                    nftData = response.data;
                     renderPage(1);
                     renderPagination();
                 } else {
@@ -55,15 +58,12 @@
             pageData.forEach(item => {
                 const nftItem = document.createElement('div');
 
-                // 轉換十六進制數據為Base64
                 const base64Data = hexToBase64(item.hex);
 
-                // 創建圖片元素
                 const image = document.createElement('img');
-                image.src = `data:image/png;base64,${base64Data}`; // 這裡假設是JPEG圖片
+                image.src = `data:image/png;base64,${base64Data}`;
                 nftItem.appendChild(image);
 
-                // 顯示 punk_id
                 const punkIdLabel = document.createElement('div');
                 punkIdLabel.textContent = `Punk ID: ${item.punk_id}`;
                 nftItem.appendChild(punkIdLabel);
@@ -72,7 +72,7 @@
                 nftList.appendChild(nftItem);
 
                 if (item.mint) {
-                    image.classList.add('darkened'); // 若 mint 為 true，將圖片壓暗
+                    image.classList.add('darkened');
                 }
             });
         }
