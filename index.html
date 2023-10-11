@@ -2,21 +2,26 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>NFT 網站</title>
+    <title>AtomPunks</title>
 </head>
 <body>
-    <h1>NFT 網站</h1>
-    <div id="pagination"></div>
-    <div id="nft-list"></div>
-
     <style>
+        body {
+            background-color: rgb(208, 208, 224);
+        }
+
         .darkened {
             filter: brightness(0.5);
         }
+
         #pagination a {
-            margin-right: 3px; /* 添加3px的右边距 */
+            margin-right: 3px;
         }
     </style>
+
+    <h1>NFT 網站</h1>
+    <div id="pagination"></div>
+    <div id="nft-list"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> <!-- 引入 Axios 库 -->
 
@@ -91,6 +96,13 @@
                 pageLink.textContent = i;
                 pageLink.addEventListener('click', () => renderPage(i));
                 pagination.appendChild(pageLink);
+
+                if (i < totalPages) {
+                    // 插入间隔元素（可以是空格、竖线等）
+                    const separator = document.createElement('span');
+                    separator.textContent = ' | ';
+                    pagination.appendChild(separator);
+                }
             }
         }
     </script>
