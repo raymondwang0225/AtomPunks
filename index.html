@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NFT 網站</title>
+</head>
+<body>
+    <h1>NFT 網站</h1>
+    <div id="pagination"></div>
+    <div id="nft-list"></div>
+
+    <style>
+        .darkened {
+            filter: brightness(0.5); /* 降低圖片亮度，可根據需要調整值 */
+        }
+    </style>
+
+    <script>
+        let nftData = [];
+
+        async function fetchData() {
+            try {
+                const response = await fetch('10kpunk_data.json');
+                if (response.ok) {
+                    nftData = await response.json();
+                    renderPage(1);
+                    renderPagination();
+                } else {
+                    console.error('Failed to fetch data');
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        fetchData();
+
+        const itemsPerPage = 200;
+        let totalPages = 0;
+
+        function hexToBase64(hex) {
+            const buffer = new Uint8Array(hex.match(/.{1,2}/g).map(byte => parseInt(byte, 16));
+            return btoa(String.fromCharCode.apply(null, buffer));
+        }
+
+        function renderPage(page) {
+            if (!nftData || nftData.length === 0) return;
+
+            const start = (page - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageData = nftData.slice(start, end);
+
+            const nftList = document.getElementById('nft-list');
+            nftList.innerHTML = '';
+
+            pageData.forEach(item => {
+                const nftItem = document.createElement('div');
+
+                // 轉換十六進制數據為Base64
+                const base64Data = hexToBase64(item.hex);
+
+                // 創建圖片元素
+                const image = document.createElement('img');
+                image.src = `data:image/jpeg;base64,${base64Data}`; // 這裡假設是JPEG圖片
+                nftItem.appendChild(image);
+
+                // 顯示 punk_id
+                const punkIdLabel = document.createElement('div');
+                punkIdLabel.textContent = `Punk ID: ${item.punk_id}`;
+                nftItem.appendChild(punkIdLabel);
+
+                nftItem.innerHTML += `Mint: ${item.mint}, Atomial Number: ${item.atomical_number}`;
+                nftList.appendChild(nftItem);
+
+                if (item.mint) {
+                    image.classList.add('darkened'); // 若 mint 為 true，將圖片壓暗
+                }
+            });
+        }
+
+        function renderPagination() {
+            totalPages = Math.ceil(nftData.length / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const pageLink = document.createElement('a');
+                pageLink.href = 'javascript:void(0);';
+                pageLink.textContent = i;
+                pageLink.addEventListener('click', () => renderPage(i));
+                pagination.appendChild(pageLink);
+            }
+        }
+    </script>
+</body>
+</html>
