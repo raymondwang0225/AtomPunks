@@ -3,8 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>AtomPunks</title>
-</head>
-<body>
     <style>
         body {
             background-color: rgb(208, 208, 224);
@@ -18,19 +16,23 @@
             margin-right: 3px;
         }
 
-        .image-row {
-            display: flex;
-            margin-bottom: 10px;
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(20, 100px); /* 每列100px宽 */
+            grid-gap: 10px; /* 列与列之间的间隔 */
         }
 
-        .image-row > div {
-            margin-right: 20px;
+        .image-grid div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
     </style>
-
+</head>
+<body>
     <h1>AtomPunks</h1>
     <div id="pagination"></div>
-    <div id="nft-list"></div>
+    <div class="image-grid" id="nft-list"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> <!-- 引入 Axios 库 -->
 
@@ -72,43 +74,28 @@
             const nftList = document.getElementById('nft-list');
             nftList.innerHTML = '';
 
-            const columns = 20;
-            const rows = 10;
-            const imageSize = 100; // 调整图像大小，以便适应布局
+            pageData.forEach(item => {
+                const nftItem = document.createElement('div');
 
-            for (let row = 0; row < rows; row++) {
-                const rowContainer = document.createElement('div');
-                rowContainer.classList.add('image-row');
-                nftList.appendChild(rowContainer);
+                const base64Data = hexToBase64(item.hex);
 
-                for (let col = 0; col < columns; col++) {
-                    const colIndex = row * columns + col;
-                    if (colIndex < pageData.length) {
-                        const item = pageData[colIndex];
+                const image = document.createElement('img');
+                image.src = `data:image/png;base64,${base64Data}`;
+                image.style.width = '100px'; // 设置图像宽度
+                image.style.height = '100px'; // 设置图像高度
+                nftItem.appendChild(image);
 
-                        const nftItem = document.createElement('div');
+                const punkIdLabel = document.createElement('div');
+                punkIdLabel.textContent = `Punk ID: ${item.punk_id}`;
+                nftItem.appendChild(punkIdLabel);
 
-                        const base64Data = hexToBase64(item.hex);
+                nftItem.innerHTML += `Mint: ${item.mint}, Atomial Number: ${item.atomical_number}`;
+                nftList.appendChild(nftItem);
 
-                        const image = document.createElement('img');
-                        image.src = `data:image/png;base64,${base64Data}`;
-                        image.style.width = imageSize + 'px'; // 设置图像宽度
-                        image.style.height = imageSize + 'px'; // 设置图像高度
-                        nftItem.appendChild(image);
-
-                        const punkIdLabel = document.createElement('div');
-                        punkIdLabel.textContent = `Punk ID: ${item.punk_id}`;
-                        nftItem.appendChild(punkIdLabel);
-
-                        nftItem.innerHTML += `Mint: ${item.mint}, Atomial Number: ${item.atomical_number}`;
-                        rowContainer.appendChild(nftItem);
-
-                        if (item.mint) {
-                            image.classList.add('darkened');
-                        }
-                    }
+                if (item.mint) {
+                    image.classList.add('darkened');
                 }
-            }
+            });
         }
 
         function renderPagination() {
