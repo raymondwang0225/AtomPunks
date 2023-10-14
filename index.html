@@ -39,8 +39,8 @@
             }
 
             #result ul li.taken {
-                background: #c00;
-                opacity: 0.1;
+                background: #888;
+                /* opacity: 0.1; */
             }
 
             #result ul li .pfp {
@@ -248,7 +248,8 @@
                 const lastElement = punk_atomicals[punk_atomicals.length - 1];
                 const atomicalLastNumber = lastElement["atomical_number"];
                 const minted = document.getElementById("minted_amount");
-                minted.textContent = punk_atomicals.length + " / 10000" + "  ｜ Updated to Atomical " + atomicalLastNumber;
+                // minted.textContent = punk_atomicals.length + " / 10000" + "  ｜ Updated to Atomical " + atomicalLastNumber;
+                minted.textContent = punk_atomicals.length + " / 10000" + "  ｜ Atomical Number Range : 261 - 25813";
 
                 // load first page by default
                 showItems(currentPage)
